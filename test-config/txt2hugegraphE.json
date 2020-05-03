@@ -1,0 +1,59 @@
+
+{
+    "job": {
+        "content": [
+            {
+                "reader": {
+                    "name": "txtfilereader", 
+                    "parameter": {
+                        "column": [
+                            {
+                                "index" : 0,
+                                "type": "long"
+                            },
+                            {
+                                "index" : 1,
+                                "type": "long"
+                            }
+                        ], 
+                        "fieldDelimiter": ",", 
+                        "path": ["/home/batina/test-dataset/short.txt"]
+                    }
+                }, 
+                "writer": {
+                    "name": "hugegraphwriter", 
+                    "parameter": {
+                        "column": [
+                            {
+                                "propertyType": "srcId", 
+                                "name": "src-id", 
+                                "valueType": "long", 
+                                "value": "{0}"
+                            }, 
+                            {
+                                "propertyType": "dstId", 
+                                "name": "dst-id", 
+                                "valueType": "long", 
+                                "value": "{1}"
+                            }
+                        ], 
+                        "dstLabel": "v", 
+                        "elementType": "EDGE", 
+                        "graph": "hugegraph", 
+                        "host": "192.168.192.131", 
+                        "idStrategy": "CUSTOMIZE", 
+                        "label": "send-to", 
+                        "port": 8080, 
+                        "srcLabel": "v", 
+                        "writeMode": "INSERT"
+                    }
+                }
+            }
+        ], 
+        "setting": {
+            "speed": {
+                "channel": 2
+            }
+        }
+    }
+}

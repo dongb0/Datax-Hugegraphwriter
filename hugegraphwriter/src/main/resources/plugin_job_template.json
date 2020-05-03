@@ -1,0 +1,30 @@
+{
+  "name": "hugegraphwriter",
+  "parameter": {
+    "host": "139.196.100.210",
+    "port": 12345,
+    "graph": "hugegraph",
+    "label": "edge-test-label",
+    "elementType": "VERTEX",
+    "srcLabel": "test-srcLabel-",
+    "dstLabel": "test-dstLabel-",
+    "labelType": "string",
+    "writeMode": "INSERT",
+    "idStrategy": "CUSTOMIZE",
+
+    "column": [
+      {
+        "name": "id",
+        "value": "{0}",
+        "valueType": "int",
+        "propertyType": "vertexId"
+      },
+      {
+        "name": "id",
+        "value": "{1}",
+        "valueType": "string",
+        "propertyType": "vertexProperty"
+      }
+    ]
+  }
+}

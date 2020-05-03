@@ -1,0 +1,62 @@
+{
+    "job": {
+        "setting": {
+            "speed": {
+                "channel": 1
+            }
+        },
+        "content": [
+            {
+                 "reader": {
+                    "name": "streamreader",
+                    "parameter": {
+                        "column" : [
+                            {
+                                "random": "1000,2000",
+                                "type": "long"
+                            },
+                            {
+                                "random": "100,200",
+                                "type": "long"
+                            },
+                            {
+                                "random": "10,16",
+                                "type": "string"
+                            }
+                        ],
+                        "sliceRecordCount": 20
+                    }
+                },
+                "writer": {
+                    "name": "gdbwriter",
+                    "parameter": {
+                        "host": "gds-wz9u6mz919206512129970pub.graphdb.rds.aliyuncs.com",
+                        "port": 3734,
+                        "username": "root",
+                        "password": "batina10+10=100",
+                        "writeMode": "INSERT",
+                        "labelType": "VERTEX",
+                        "label": "${1}",
+                        "idTransRule": "none",
+                        "session": true,
+                        "maxRecordsInBatch": 64,
+                        "column": [
+                            {
+                                "name": "id",
+                                "value": "${0}",
+                                "type": "string",
+                                "columnType": "primaryKey"
+                            },
+                            {
+                                "name": "vertex_propKey",
+                                "value": "${2}",
+                                "type": "string",
+                                "columnType": "vertexProperty"
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

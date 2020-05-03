@@ -1,0 +1,67 @@
+{
+    "job": {
+        "content": [
+            {
+                "reader": {
+                    "name": "mysqlreader", 
+                    "parameter": {
+                        "column": ["id", "source_id", "target_id", "date", "weight"], 
+                        "connection": [
+                            {
+                                "jdbcUrl": ["jdbc:mysql://127.0.0.1:3306/batina_test"], 
+                                "table": ["knows"]
+                            }
+                        ], 
+                        "password": "Batina10+10=100", 
+                        "username": "batina"
+                    }
+                }, 
+                "writer": {
+                    "name": "hugegraphwriter",
+                    "parameter": {
+                        "host": "139.196.100.210",
+                        "port": 12345,
+                        "graph": "hugegraph",
+                        "label": "knows",
+                        "elementType": "EDGE",
+                        "srcLabel": "person",
+                        "dstLabel": "person",
+                        "writeMode": "INSERT",  
+                        "idStrategy": "CUSTOMIZE",                 
+                        "column": [
+                            {
+                                "name": "src-id",
+                                "value": "{1}",
+                                "valueType": "int",
+                                "propertyType": "srcId"
+                            },
+                            {
+                                "name": "dst-id",
+                                "value": "{2}",
+                                "valueType": "int",
+                                "propertyType": "dstId"
+                            },
+                            {
+                                "name": "date",
+                                "value": "{3}",
+                                "valueType": "string",
+                                "propertyType": "edgeProperty" 
+                            },
+                            {
+                                "name": "weight",
+                                "value": "{4}",
+                                "valueType": "int",
+                                "propertyType": "edgeProperty" 
+                            }                            
+                        ]
+                    }
+                }
+            }
+        ], 
+        "setting": {
+            "speed": {
+                "channel": 1
+            }
+        }
+    }
+}

@@ -1,0 +1,49 @@
+{
+    "job": {
+        "content": [
+            {
+                "reader": {
+                    "name": "streamreader", 
+                    "parameter": {
+                        "column": [{"random":"1,100", "type": "long"}], 
+                        "sliceRecordCount": "10"
+                    }
+                }, 
+                "writer": {
+                    "name": "hugegraphwriter", 
+                    "parameter": {
+                        "column": [
+                            {
+                                "columnType": "primaryKey", 
+                                "name": "id", 
+                                "type": "string", 
+                                "value": "-test-${0}"
+                            }, 
+                            {
+                                "columnType": "srcPrimaryKey", 
+                                "name": "id", 
+                                "type": "string", 
+                                "value": "from-id-${2}"
+                            }
+                        ], 
+                        "dstIdTransRule": "labelPrefix", 
+                        "dstLabel": "test-dstLabel-", 
+                        "host": "139.196.100.210", 
+                        "idTransRule": "labelPrefix", 
+                        "label": "test-label", 
+                        "labelType": "EDGE", 
+                        "port": 12345, 
+                        "srcIdTransRule": "labelPrefix", 
+                        "srcLabel": "test-srcLabel-", 
+                        "writeMode": "INSERT"
+                    }
+                }
+            }
+        ], 
+        "setting": {
+            "speed": {
+                "channel": 1
+            }
+        }
+    }
+}

@@ -132,6 +132,7 @@ venv.bak/
 .metadata
 bin/
 tmp/
+test-config/*
 *.tmp
 *.bak
 *.swp

@@ -1,0 +1,38 @@
+
+{
+    "job": {
+        "content": [
+            {
+                "reader": {
+                    "name": "txtfilereader", 
+                    "parameter": {
+                        "column": [
+                            {
+                                "index" : 0,
+                                "type": "long"
+                            },
+                            {
+                                "index" : 1,
+                                "type": "long"
+                            }
+                        ], 
+                        "fieldDelimiter": "\t", 
+                        "path": ["/home/batina/test-dataset/amazon-no-header.txt"]
+                    }
+                }, 
+                "writer": {
+                    "name": "streamwriter", 
+                    "parameter": {
+                        "encoding": "", 
+                        "print": true
+                    }
+                }
+            }
+        ], 
+        "setting": {
+            "speed": {
+                "channel": 1
+            }
+        }
+    }
+}

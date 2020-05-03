@@ -1,0 +1,6 @@
+{
+  "name": "hugegraphwriter",
+  "class": "com.alibaba.datax.plugin.writer.hugegraphwriter.HugegraphWriter",
+  "description": "Create schema and execute DSL on hugegraph in restful manner",
+  "developer": "batina"
+}
