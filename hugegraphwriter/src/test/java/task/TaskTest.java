@@ -16,6 +16,7 @@ import com.alibaba.datax.plugin.writer.hugegraphwriter.task.TaskExecutor;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.util.HugegraphLogger;
 import com.baidu.hugegraph.driver.GraphManager;
 import com.baidu.hugegraph.structure.GraphElement;
+import com.baidu.hugegraph.structure.graph.Edge;
 import com.baidu.hugegraph.structure.graph.Vertex;
 import configs.SchemaConfig;
 import org.apache.commons.lang3.time.StopWatch;
@@ -47,6 +48,8 @@ public class TaskTest {
                 records = new ArrayList<>(max_buffer);
             }
         }
+        if(!records.isEmpty())
+            taskExecutor.submitBatch(records, ElemType.VERTEX);
     }
 
 //    @Test
@@ -85,6 +88,9 @@ public class TaskTest {
                 records = new ArrayList<>(max_buffer);
             }
         }
+        if(!records.isEmpty()){
+            taskExecutor.submitBatch(records, ElemType.EDGE);
+        }
     }
 
     @Test
@@ -104,5 +110,71 @@ public class TaskTest {
         submitEdge(num, eb);
         timer.stop();
         log.info("Insert {} Edges, run time: {}s", num, timer.getTime()/1000);
+    }
+
+    @Test
+    public void insertEdgeTest(){
+        Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestE);
+//        SchemaBuilder taskSB = new SchemaBuilder(config);
+        EdgeBuilder eb = new EdgeBuilder(config);
+        TaskExecutor taskExecutor = new TaskExecutor(2);
+
+        Record r = new DefaultRecord();
+        r.addColumn(new LongColumn(1));
+        r.addColumn(new StringColumn("task-test-E-fail-1"));
+        r.addColumn(new LongColumn(1234));
+
+        // success
+        taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+//        GraphElement elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+//        log.info("success insert return {}", elem);
+//        assert elem == null: "expected element is null but get " + elem.toString();
+
+//        r = new DefaultRecord();
+//        r.addColumn(new LongColumn(-1));
+//        r.addColumn(new StringColumn("task-test-E-fail-2"));
+//        r.addColumn(new LongColumn(-2));
+//
+//        //fail
+//        taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+
+//        elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+//        log.info("failed insert return {}", elem);
+//        assert elem != null: "expected element not null";
+    }
+
+
+    @Test
+    public void batchSubmitEdgesFailTest(){
+        log.info("\n\nRunning batchSubmitEdgesFailTest....");
+        Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestE);
+//        SchemaBuilder taskSB = new SchemaBuilder(config);
+        EdgeBuilder eb = new EdgeBuilder(config);
+        TaskExecutor taskExecutor = new TaskExecutor(2);
+
+        Record r = new DefaultRecord();
+        r.addColumn(new LongColumn(-1));
+        r.addColumn(new StringColumn("task-test-E-fail"));
+        r.addColumn(new LongColumn(-7788));
+
+        List<Edge> records = new ArrayList<>(16);
+        records.add(eb.build(r));
+
+        r = new DefaultRecord();
+        r.addColumn(new LongColumn(Math.abs(10)));
+        r.addColumn(new StringColumn("task-test-E-10-20"));
+        r.addColumn(new LongColumn(Math.abs(20)));
+        records.add(eb.build(r));
+
+        r = new DefaultRecord();
+        r.addColumn(new LongColumn(Math.abs(20)));
+        r.addColumn(new StringColumn("task-test-E-20-30"));
+        r.addColumn(new LongColumn(Math.abs(30)));
+        records.add(eb.build(r));
+
+        taskExecutor.submitBatch(records, ElemType.EDGE);
+//        List<?> errorEdges = taskExecutor.submitBatch(records, ElemType.EDGE);
+//        assert errorEdges.size() == 1: "expected 1 error records, but get " + errorEdges.size();
+
     }
 }

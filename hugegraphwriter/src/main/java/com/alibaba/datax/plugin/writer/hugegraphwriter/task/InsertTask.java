@@ -9,7 +9,6 @@ import com.baidu.hugegraph.structure.graph.Vertex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 
 public class InsertTask implements Runnable{
 
@@ -26,6 +25,7 @@ public class InsertTask implements Runnable{
 
     @Override
     public void run() {
+        log.info("\nInsertTask add {}", element);
         if(type == ElemType.VERTEX){
             graphManager.addVertex((Vertex) element);
         }

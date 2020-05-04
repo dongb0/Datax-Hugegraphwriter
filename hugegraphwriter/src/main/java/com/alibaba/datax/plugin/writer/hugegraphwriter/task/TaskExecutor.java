@@ -1,8 +1,11 @@
 package com.alibaba.datax.plugin.writer.hugegraphwriter.task;
 
+import com.alibaba.datax.plugin.writer.hugegraphwriter.client.ClientHolder;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.ElemType;
+import com.baidu.hugegraph.driver.GraphManager;
 import com.baidu.hugegraph.structure.GraphElement;
 import com.baidu.hugegraph.structure.graph.Edge;
+import com.baidu.hugegraph.structure.graph.Graph;
 import com.baidu.hugegraph.structure.graph.Vertex;
 import org.h2.command.dml.Insert;
 import org.slf4j.Logger;
@@ -32,30 +35,29 @@ public class TaskExecutor {
      * @param type      V/E
      * @return
      */
-    public List<? extends GraphElement> submitBatch(List<? extends GraphElement> records, ElemType type){
-        List<GraphElement> errorRecords = new ArrayList<>();
+    public void submitBatch(List<? extends GraphElement> records, ElemType type){
+//        List<GraphElement> errorRecords = new ArrayList<>();
         batchInsertTask = new BatchInsertTask(records, type);
         try {
             CompletableFuture.runAsync(batchInsertTask, batchService).get();
         } catch (Exception e){
-            log.warn("Submit batch fail. batch[0]:{}", records.get(0).toString());
-            for(GraphElement elem : records){
-                GraphElement retElem = submitOne(elem, type);
-                if(retElem != null)
-                    errorRecords.add(retElem);
-            }
+            e.printStackTrace();
+//            for(GraphElement elem : records){
+//                submitOne(elem, type);
+//            }
+//            log.warn("Submit batch fail. Failed record(s) size:{}\n{}", errorRecords.size(), errorRecords);
         }
-        return  null;
     }
 
-    public GraphElement submitOne(GraphElement element, ElemType type){
+    public void submitOne(GraphElement element, ElemType type){
+        log.info("SubmitOne gonna submit:{},{}", element, type);
         insertTask = new InsertTask(element, type);
         try{
-            CompletableFuture.runAsync(insertTask, batchService).get();
+//            CompletableFuture.runAsync(insertTask, batchService).get();
+            batchService.submit(insertTask).get();
         }catch (Exception e){
-            return element;
+            e.printStackTrace();
         }
-        return null;
     }
 
     public void shutdown(){
