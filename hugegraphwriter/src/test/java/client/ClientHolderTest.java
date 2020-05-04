@@ -32,7 +32,7 @@ public class ClientHolderTest {
         String ip = config.getString("host");
         String url = "http://" +  ip + ":" + port;
 
-        Assert.assertEquals(url, "http://192.168.192.131:8080");
+        Assert.assertEquals(url, "http://localhost:8080");
 
         String path = "versions";
         log.info("Request to {}/{}", url, path);

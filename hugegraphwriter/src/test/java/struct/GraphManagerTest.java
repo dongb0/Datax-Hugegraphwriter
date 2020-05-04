@@ -26,7 +26,7 @@ public class GraphManagerTest {
     Logger log  = HugegraphLogger.get(GraphManagerTest.class);
     Configuration vertexConfig = Configuration.from(SchemaConfig.jsonConfig_1);
     Configuration edgeConfig = Configuration.from(SchemaConfig.jsonConfig_2);
-    RestClient client = ClientHolder.getClient("192.168.192.131", 8080, "hugegraph");
+    RestClient client = ClientHolder.getClient("localhost", 8080, "hugegraph");
     GraphManager gm = new GraphManager(client, "hugegraph");
 
     SchemaBuilder vertex_sb = new SchemaBuilder(vertexConfig);
@@ -37,18 +37,18 @@ public class GraphManagerTest {
         vertex_sb.createVertexSchema();
 
         Vertex v = new Vertex("user");
-        v.id(776);
+        v.id(-776);
         v.property("name", "657hula");
         Vertex resV = gm.addVertex(v);
         log.info(resV.toString());
 
         v = new Vertex("user");
-        v.id(63214);
+        v.id(-63214);
         resV = gm.addVertex(v);
         log.info(resV.toString());
 
         v = new Vertex("user");
-        v.id(214);
+        v.id(-214);
         resV = gm.addVertex(v);
         log.info(resV.toString());
     }
@@ -61,15 +61,15 @@ public class GraphManagerTest {
         edge_sb.createPropertySchemas();
         edge_sb.createEdgeSchema();
         Edge e = new Edge("knows");
-        e.sourceId(63214); e.sourceLabel("user");
-        e.targetId(214); e.targetLabel("user");
+        e.sourceId(-63214); e.sourceLabel("user");
+        e.targetId(-214); e.targetLabel("user");
         log.info("building edge: {}", e.toString());
         Edge resE = gm.addEdge(e);
         log.info("return Edge: {}",resE.toString());
         assert resE.id() != null;
 
-        e.sourceId(776); e.sourceLabel("user");
-        e.targetId(214); e.targetLabel("user");
+        e.sourceId(-776); e.sourceLabel("user");
+        e.targetId(-214); e.targetLabel("user");
         e.property("name", "hanasei");
         resE = gm.addEdge(e);
         log.info("return Edge: {}",resE.toString());
@@ -82,10 +82,10 @@ public class GraphManagerTest {
         vertex_sb.createVertexSchema();
 
         Record r1 = new DefaultRecord(), r2 = new DefaultRecord();
-        r1.addColumn(new LongColumn(1001));
+        r1.addColumn(new LongColumn(-1001));
         r1.addColumn(new StringColumn("user001"));
 
-        r2.addColumn(new LongColumn(1002));
+        r2.addColumn(new LongColumn(-1002));
         r2.addColumn(new StringColumn("user002"));
 
         VertexBuilder vb = new VertexBuilder(vertexConfig);
@@ -97,8 +97,8 @@ public class GraphManagerTest {
         List<Vertex> retVertice = gm.addVertices(Arrays.asList(v1, v2));
         //TODO mysterious return type, id changed from Long to String
 
-        assert Integer.parseInt((String)retVertice.get(0).id()) == 1001;
-        assert Integer.parseInt((String)retVertice.get(1).id()) == 1002;
+        assert Integer.parseInt((String)retVertice.get(0).id()) == -1001;
+        assert Integer.parseInt((String)retVertice.get(1).id()) == -1002;
     }
 
     @Test
@@ -112,19 +112,19 @@ public class GraphManagerTest {
 
         Record r1 = new DefaultRecord(), r2 = new DefaultRecord();
 
-        r1.addColumn(new LongColumn(1001));
+        r1.addColumn(new LongColumn(-1001));
         r1.addColumn(new StringColumn("Glincy"));
-        r1.addColumn(new LongColumn(1002));
+        r1.addColumn(new LongColumn(-1002));
 
-        r2.addColumn(new LongColumn(1001));
-        r2.setColumn(2, new LongColumn(1001));
+        r2.addColumn(new LongColumn(-1001));
+        r2.setColumn(2, new LongColumn(-1001));
 
         EdgeBuilder eb = new EdgeBuilder(edgeConfig);
         Edge e1 = eb.build(r1), e2 = eb.build(r2);
         log.info("e1: {}, e2: {}", e1.toString(), e2.toString());
 
         List<Edge> retEdges = gm.addEdges(Arrays.asList(e1,e2));
-        assert (long)retEdges.get(0).sourceId() == 1001;
-        assert (long)retEdges.get(1).sourceId() == 1001;
+        assert (long)retEdges.get(0).sourceId() == -1001;
+        assert (long)retEdges.get(1).sourceId() == -1001;
     }
 }

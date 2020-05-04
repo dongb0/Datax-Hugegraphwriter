@@ -29,22 +29,22 @@ public class SchemaBuilderTest {
          and delete all test schema afterward
      */
 
-    @Test
-    public void schemaManagerTest(){
-        RestClient client = ClientHolder.getClient(config);
-        SchemaManager schema = new SchemaManager(client, "hugegraph");
-        RestResult res = client.get("graphs/hugegraph/schema/propertykeys");
-        Assert.assertEquals(res.status(), 200);
-
-        List<VertexLabel>  vList = schema.getVertexLabels();
-        log.info(vList.toString());
-
-        for(VertexLabel v : vList){
-            schema.removeVertexLabel(v.name());
-        }
-        vList = schema.getVertexLabels();
-        assert vList.isEmpty();
-    }
+//    @Test
+//    public void schemaManagerTest(){
+//        RestClient client = ClientHolder.getClient(config);
+//        SchemaManager schema = new SchemaManager(client, "hugegraph");
+//        RestResult res = client.get("graphs/hugegraph/schema/propertykeys");
+//        Assert.assertEquals(res.status(), 200);
+//
+//        List<VertexLabel>  vList = schema.getVertexLabels();
+//        log.info(vList.toString());
+//
+//        for(VertexLabel v : vList){
+//            schema.removeVertexLabel(v.name());
+//        }
+//        vList = schema.getVertexLabels();
+//        assert vList.isEmpty();
+//    }
 
     @Test
     public void createPropertySchemaTest(){

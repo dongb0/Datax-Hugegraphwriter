@@ -2,7 +2,7 @@ package configs;
 
 public class SchemaConfig {
     public static String jsonConfig_1 = "{\n" +
-            "                        \"host\": \"192.168.192.131\",\n" +
+            "                        \"host\": \"localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"user\",\n" +
@@ -30,7 +30,7 @@ public class SchemaConfig {
             "                    }";
 
     public static String jsonConfig_2 = "{\n" +
-            "                        \"host\": \"192.168.192.131\",\n" +
+            "                        \"host\": \"1localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"knows\",\n" +
@@ -66,7 +66,7 @@ public class SchemaConfig {
             "                    }";
 
     public static String jsonConfig_TaskTestV = "{\n" +
-            "                        \"host\": \"192.168.192.131\",\n" +
+            "                        \"host\": \"localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"task-test\",\n" +
@@ -94,8 +94,8 @@ public class SchemaConfig {
             "                    }";
 
     public static String jsonConfig_TaskTestE = "{\n" +
-            "                        \"host\": \"139.196.100.210\",\n" +
-            "                        \"port\": 12345,\n" +
+            "                        \"host\": \"localhost\",\n" +
+            "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"task-test-E\",\n" +
             "                        \"elementType\": \"EDGE\",\n" +

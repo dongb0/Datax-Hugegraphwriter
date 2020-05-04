@@ -49,8 +49,9 @@ public class TaskTest {
         }
     }
 
-    @Test
+//    @Test
     public void batchSubmitVertexTest(){
+        log.info("\n\nInsert Batch Vertices Test....");
         int num = 5 * 10000;
         Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestV);
         SchemaBuilder taskSB = new SchemaBuilder(config);
@@ -80,7 +81,7 @@ public class TaskTest {
             records.add(builder.build(r));
             if(records.size() >= max_buffer){
                 taskExecutor.submitBatch(records, ElemType.EDGE);
-                log.debug(records.get(0).toString());
+//                log.debug(records.get(0).toString());
                 records = new ArrayList<>(max_buffer);
             }
         }
@@ -88,9 +89,11 @@ public class TaskTest {
 
     @Test
     public void batchSubmitEdgeTest(){
-//        batchSubmitVertexTest();
+        batchSubmitVertexTest();
 
-        int num = 2*10000;
+        log.info("\n\nInsert Batch Edges Test...");
+
+        int num = 4*10000;
         Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestE);
         SchemaBuilder taskSB = new SchemaBuilder(config);
         EdgeBuilder eb = new EdgeBuilder(config);

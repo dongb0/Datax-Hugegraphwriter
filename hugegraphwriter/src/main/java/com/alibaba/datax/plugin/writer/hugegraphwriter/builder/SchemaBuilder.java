@@ -120,6 +120,7 @@ public class SchemaBuilder {
                 builder.useCustomizeNumberId();
                 break;
         }
+        log.info("Create Vertex Schema -> property:{}, nullable:{}, idStrategy:{}", propName, nullableProp, idStrategy);
         return builder.ifNotExist().create();
     }
 

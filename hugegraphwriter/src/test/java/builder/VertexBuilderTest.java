@@ -24,6 +24,6 @@ public class VertexBuilderTest {
         record.addColumn(new LongColumn(2048));
         Vertex v = vbuilder.build(record);
         log.info(v.toString());
-        assert (int) v.id() == 2048;
+        assert (long) v.id() == 2048;
     }
 }
