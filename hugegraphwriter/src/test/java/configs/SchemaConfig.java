@@ -3,7 +3,7 @@ package configs;
 public class SchemaConfig {
     public static String jsonConfig_1 = "{\n" +
             "                        \"host\": \"localhost\",\n" +
-            "                        \"port\": 12345,\n" +
+            "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"user\",\n" +
             "                        \"elementType\": \"VERTEX\",\n" +
@@ -31,7 +31,7 @@ public class SchemaConfig {
 
     public static String jsonConfig_2 = "{\n" +
             "                        \"host\": \"1localhost\",\n" +
-            "                        \"port\": 12345,\n" +
+            "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"knows\",\n" +
             "                        \"elementType\": \"EDGE\",\n" +
@@ -67,7 +67,7 @@ public class SchemaConfig {
 
     public static String jsonConfig_TaskTestV = "{\n" +
             "                        \"host\": \"localhost\",\n" +
-            "                        \"port\": 12345,\n" +
+            "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"task-test\",\n" +
             "                        \"elementType\": \"VERTEX\",\n" +
@@ -95,7 +95,7 @@ public class SchemaConfig {
 
     public static String jsonConfig_TaskTestE = "{\n" +
             "                        \"host\": \"localhost\",\n" +
-            "                        \"port\": 12345,\n" +
+            "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"task-test-E\",\n" +
             "                        \"elementType\": \"EDGE\",\n" +
@@ -131,7 +131,7 @@ public class SchemaConfig {
 
     public static String jsonConfig_TaskTestV_remote = "{\n" +
             "                        \"host\": \"139.196.100.210\",\n" +
-            "                        \"port\": 12345,\n" +
+            "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"task-test\",\n" +
             "                        \"elementType\": \"VERTEX\",\n" +
@@ -159,7 +159,7 @@ public class SchemaConfig {
 
     public static String jsonConfig_TaskTestE_remote = "{\n" +
             "                        \"host\": \"139.196.100.210\",\n" +
-            "                        \"port\": 12345,\n" +
+            "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"task-test-E\",\n" +
             "                        \"elementType\": \"EDGE\",\n" +

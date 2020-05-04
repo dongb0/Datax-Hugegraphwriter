@@ -29,35 +29,34 @@ public class TaskExecutor {
         batchService = Executors.newFixedThreadPool(threads);
     }
 
-    /**
-     * return error records if failure occurred. Otherwise return null.
-     * @param records   List of V/E to be submitted.
-     * @param type      V/E
-     * @return
-     */
-    public void submitBatch(List<? extends GraphElement> records, ElemType type){
-//        List<GraphElement> errorRecords = new ArrayList<>();
+    public List<GraphElement> submitBatch(List<? extends GraphElement> records, ElemType type){
+        List<GraphElement> errorRecords = null;
         batchInsertTask = new BatchInsertTask(records, type);
         try {
             CompletableFuture.runAsync(batchInsertTask, batchService).get();
         } catch (Exception e){
             e.printStackTrace();
-//            for(GraphElement elem : records){
-//                submitOne(elem, type);
-//            }
-//            log.warn("Submit batch fail. Failed record(s) size:{}\n{}", errorRecords.size(), errorRecords);
+            errorRecords = new ArrayList<>();
+            for(GraphElement elem : records){
+                GraphElement retElem = submitOne(elem, type);
+                if(retElem != null)
+                    errorRecords.add(retElem);
+            }
+            log.warn("Submit batch fail. Failed record(s) size:{}\n{}", errorRecords.size(), errorRecords);
         }
+        return errorRecords;
     }
 
-    public void submitOne(GraphElement element, ElemType type){
-        log.info("SubmitOne gonna submit:{},{}", element, type);
+    public GraphElement submitOne(GraphElement element, ElemType type){
+        GraphElement elem = null;
         insertTask = new InsertTask(element, type);
         try{
-//            CompletableFuture.runAsync(insertTask, batchService).get();
-            batchService.submit(insertTask).get();
+            CompletableFuture.runAsync(insertTask, batchService).get();
         }catch (Exception e){
             e.printStackTrace();
+            elem = element;
         }
+        return elem;
     }
 
     public void shutdown(){

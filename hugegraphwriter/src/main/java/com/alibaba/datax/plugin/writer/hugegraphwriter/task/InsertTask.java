@@ -25,7 +25,6 @@ public class InsertTask implements Runnable{
 
     @Override
     public void run() {
-        log.info("\nInsertTask add {}", element);
         if(type == ElemType.VERTEX){
             graphManager.addVertex((Vertex) element);
         }

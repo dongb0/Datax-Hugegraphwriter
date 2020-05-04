@@ -31,12 +31,12 @@ public class TaskTest {
 
     Logger log = HugegraphLogger.get(TaskTest.class);
 
-    private  <T extends ElemBuilder> void submitVertex(int num, T builder){
-        int max_buffer = 48;
+    private void submitVertex(int num, VertexBuilder builder){
+        int max_buffer = 16;
         TaskExecutor taskExecutor = new TaskExecutor(2);
         List<GraphElement> records = new ArrayList<>(max_buffer);
         ElemType type = ElemType.VERTEX;
-        for(int i = 0 ; i < num; i++){
+        for(int i = 0 ; i <= num; i++){
             if(i % 10000 == 0)
                 log.info("{} {} added.", i, type.string());
             Record r = new DefaultRecord();
@@ -54,8 +54,8 @@ public class TaskTest {
 
 //    @Test
     public void batchSubmitVertexTest(){
-        log.info("\n\nInsert Batch Vertices Test....");
-        int num = 5 * 10000;
+        System.out.println("\n\nInsert Batch Vertices Test....");
+        int num = 5 * 1000;
         Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestV);
         SchemaBuilder taskSB = new SchemaBuilder(config);
         VertexBuilder vb = new VertexBuilder(config);
@@ -69,7 +69,7 @@ public class TaskTest {
     }
 
     public void submitEdge(int num, EdgeBuilder builder){
-        int max_buffer = 48;
+        int max_buffer = 16;
         TaskExecutor taskExecutor = new TaskExecutor(2);
         List<GraphElement> records = new ArrayList<>(max_buffer);
         ElemType type = ElemType.EDGE;
@@ -84,7 +84,6 @@ public class TaskTest {
             records.add(builder.build(r));
             if(records.size() >= max_buffer){
                 taskExecutor.submitBatch(records, ElemType.EDGE);
-//                log.debug(records.get(0).toString());
                 records = new ArrayList<>(max_buffer);
             }
         }
@@ -97,9 +96,9 @@ public class TaskTest {
     public void batchSubmitEdgeTest(){
         batchSubmitVertexTest();
 
-        log.info("\n\nInsert Batch Edges Test...");
+        System.out.println("\n\nInsert Batch Edges Test...");
 
-        int num = 4*10000;
+        int num = 4 * 20;
         Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestE);
         SchemaBuilder taskSB = new SchemaBuilder(config);
         EdgeBuilder eb = new EdgeBuilder(config);
@@ -114,46 +113,62 @@ public class TaskTest {
 
     @Test
     public void insertEdgeTest(){
+        int num = 50;
+        Configuration configV = Configuration.from(SchemaConfig.jsonConfig_TaskTestV);
+        new SchemaBuilder(configV).createSchemas();
+        VertexBuilder vb = new VertexBuilder(configV);
+
+        //init 50+ vertices(id:[0,50]) for edge test later
+        submitVertex(num, vb);
+
         Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestE);
-//        SchemaBuilder taskSB = new SchemaBuilder(config);
+        SchemaBuilder taskSB = new SchemaBuilder(config);
+        taskSB.createSchemas();
         EdgeBuilder eb = new EdgeBuilder(config);
         TaskExecutor taskExecutor = new TaskExecutor(2);
 
         Record r = new DefaultRecord();
         r.addColumn(new LongColumn(1));
-        r.addColumn(new StringColumn("task-test-E-fail-1"));
-        r.addColumn(new LongColumn(1234));
+        r.addColumn(new StringColumn("task-test-E-failTest-1-success"));
+        r.addColumn(new LongColumn(10));
 
         // success
-        taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
-//        GraphElement elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
-//        log.info("success insert return {}", elem);
-//        assert elem == null: "expected element is null but get " + elem.toString();
+        GraphElement elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+        log.info("Insert Edge 1 complete, ret:{}", elem);
+        assert elem == null: "expected element is null but get " + elem.toString();
 
-//        r = new DefaultRecord();
-//        r.addColumn(new LongColumn(-1));
-//        r.addColumn(new StringColumn("task-test-E-fail-2"));
-//        r.addColumn(new LongColumn(-2));
-//
-//        //fail
-//        taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+        r = new DefaultRecord();
+        r.addColumn(new LongColumn(-1));
+        r.addColumn(new StringColumn("task-test-E-failTest-2"));
+        r.addColumn(new LongColumn(-2));
 
-//        elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
-//        log.info("failed insert return {}", elem);
-//        assert elem != null: "expected element not null";
+        //fail
+        elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+        log.info("Insert Edge 2 success, ret:{}", elem);
+        assert elem != null: "expected element not null";
     }
 
 
     @Test
     public void batchSubmitEdgesFailTest(){
-        log.info("\n\nRunning batchSubmitEdgesFailTest....");
+        System.out.println("\n\nRunning batchSubmitEdgesFailTest....");
+
+        int num = 50;
+        Configuration configV = Configuration.from(SchemaConfig.jsonConfig_TaskTestV);
+        new SchemaBuilder(configV).createSchemas();
+        VertexBuilder vb = new VertexBuilder(configV);
+
+        //init 50+ vertices for edge test later
+        submitVertex(num, vb);
+
         Configuration config = Configuration.from(SchemaConfig.jsonConfig_TaskTestE);
-//        SchemaBuilder taskSB = new SchemaBuilder(config);
+        SchemaBuilder taskSB = new SchemaBuilder(config);
+        taskSB.createSchemas();
         EdgeBuilder eb = new EdgeBuilder(config);
         TaskExecutor taskExecutor = new TaskExecutor(2);
 
         Record r = new DefaultRecord();
-        r.addColumn(new LongColumn(-1));
+        r.addColumn(new LongColumn(-167));
         r.addColumn(new StringColumn("task-test-E-fail"));
         r.addColumn(new LongColumn(-7788));
 
@@ -172,9 +187,12 @@ public class TaskTest {
         r.addColumn(new LongColumn(Math.abs(30)));
         records.add(eb.build(r));
 
-        taskExecutor.submitBatch(records, ElemType.EDGE);
-//        List<?> errorEdges = taskExecutor.submitBatch(records, ElemType.EDGE);
-//        assert errorEdges.size() == 1: "expected 1 error records, but get " + errorEdges.size();
+        List<?> errorEdges = taskExecutor.submitBatch(records, ElemType.EDGE);
+        assert errorEdges.size() == 1: "expected 1 error records, but get " + errorEdges.size();
+        log.error("Error records:{}", errorEdges);
 
+        records.remove(0);
+        errorEdges = taskExecutor.submitBatch(records, ElemType.EDGE);
+        assert errorEdges == null: "expect null!" + errorEdges;
     }
 }
