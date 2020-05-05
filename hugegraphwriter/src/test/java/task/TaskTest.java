@@ -33,8 +33,8 @@ public class TaskTest {
 
     private void submitVertex(int num, VertexBuilder builder){
         int max_buffer = 16;
-        TaskExecutor taskExecutor = new TaskExecutor(2);
-        List<GraphElement> records = new ArrayList<>(max_buffer);
+        TaskExecutor taskExecutor = new TaskExecutor(2, builder);
+        List<Record> records = new ArrayList<>(max_buffer);
         ElemType type = ElemType.VERTEX;
         for(int i = 0 ; i <= num; i++){
             if(i % 10000 == 0)
@@ -42,7 +42,7 @@ public class TaskTest {
             Record r = new DefaultRecord();
             r.addColumn(new LongColumn(i));
             r.addColumn(new StringColumn("task-test-" + type.string() + i));
-            records.add(builder.build(r));
+            records.add(r);
             if(records.size() >= max_buffer){
                 taskExecutor.submitBatch(records, ElemType.VERTEX);
                 records = new ArrayList<>(max_buffer);
@@ -70,8 +70,8 @@ public class TaskTest {
 
     public void submitEdge(int num, EdgeBuilder builder){
         int max_buffer = 16;
-        TaskExecutor taskExecutor = new TaskExecutor(2);
-        List<GraphElement> records = new ArrayList<>(max_buffer);
+        TaskExecutor taskExecutor = new TaskExecutor(2, builder);
+        List<Record> records = new ArrayList<>(max_buffer);
         ElemType type = ElemType.EDGE;
         Random random = new Random();
         for(int i = 0 ; i < num; i++){
@@ -81,7 +81,7 @@ public class TaskTest {
             r.addColumn(new LongColumn(Math.abs(random.nextInt() % num)));
             r.addColumn(new StringColumn("task-test-" + type.string() + i));
             r.addColumn(new LongColumn(Math.abs(random.nextInt() % num)));
-            records.add(builder.build(r));
+            records.add(r);
             if(records.size() >= max_buffer){
                 taskExecutor.submitBatch(records, ElemType.EDGE);
                 records = new ArrayList<>(max_buffer);
@@ -125,7 +125,7 @@ public class TaskTest {
         SchemaBuilder taskSB = new SchemaBuilder(config);
         taskSB.createSchemas();
         EdgeBuilder eb = new EdgeBuilder(config);
-        TaskExecutor taskExecutor = new TaskExecutor(2);
+        TaskExecutor taskExecutor = new TaskExecutor(2, eb);
 
         Record r = new DefaultRecord();
         r.addColumn(new LongColumn(1));
@@ -133,7 +133,7 @@ public class TaskTest {
         r.addColumn(new LongColumn(10));
 
         // success
-        GraphElement elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+        Record elem = taskExecutor.submitOne(r, ElemType.EDGE);
         log.info("Insert Edge 1 complete, ret:{}", elem);
         assert elem == null: "expected element is null but get " + elem.toString();
 
@@ -143,7 +143,7 @@ public class TaskTest {
         r.addColumn(new LongColumn(-2));
 
         //fail
-        elem = taskExecutor.submitOne(eb.build(r), ElemType.EDGE);
+        elem = taskExecutor.submitOne(r, ElemType.EDGE);
         log.info("Insert Edge 2 success, ret:{}", elem);
         assert elem != null: "expected element not null";
     }
@@ -165,27 +165,27 @@ public class TaskTest {
         SchemaBuilder taskSB = new SchemaBuilder(config);
         taskSB.createSchemas();
         EdgeBuilder eb = new EdgeBuilder(config);
-        TaskExecutor taskExecutor = new TaskExecutor(2);
+        TaskExecutor taskExecutor = new TaskExecutor(2, eb);
 
         Record r = new DefaultRecord();
         r.addColumn(new LongColumn(-167));
         r.addColumn(new StringColumn("task-test-E-fail"));
         r.addColumn(new LongColumn(-7788));
 
-        List<Edge> records = new ArrayList<>(16);
-        records.add(eb.build(r));
+        List<Record> records = new ArrayList<>(16);
+        records.add(r);
 
         r = new DefaultRecord();
         r.addColumn(new LongColumn(Math.abs(10)));
         r.addColumn(new StringColumn("task-test-E-10-20"));
         r.addColumn(new LongColumn(Math.abs(20)));
-        records.add(eb.build(r));
+        records.add(r);
 
         r = new DefaultRecord();
         r.addColumn(new LongColumn(Math.abs(20)));
         r.addColumn(new StringColumn("task-test-E-20-30"));
         r.addColumn(new LongColumn(Math.abs(30)));
-        records.add(eb.build(r));
+        records.add(r);
 
         List<?> errorEdges = taskExecutor.submitBatch(records, ElemType.EDGE);
         assert errorEdges.size() == 1: "expected 1 error records, but get " + errorEdges.size();

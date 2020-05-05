@@ -2,6 +2,7 @@ package com.alibaba.datax.plugin.writer.hugegraphwriter;
 
 import com.alibaba.datax.common.element.Record;
 import com.alibaba.datax.common.plugin.RecordReceiver;
+import com.alibaba.datax.common.plugin.TaskPluginCollector;
 import com.alibaba.datax.common.spi.Writer;
 import com.alibaba.datax.common.util.Configuration;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.builder.EdgeBuilder;
@@ -65,11 +66,11 @@ public class HugegraphWriter extends Writer {
         Configuration taskConfig = null;
         ElemType type = null;
         TaskExecutor taskExecutor = null;
+        TaskPluginCollector collector = getTaskPluginCollector();
 
         @Override
         public void init() {
             log.info("hugegraph Task init...");
-            taskExecutor= new TaskExecutor(1);
             taskConfig = getPluginJobConf();
             type = ElemType.valueOf(taskConfig.getString(Key.ELEMENT_TYPE));
             switch(type){
@@ -80,6 +81,7 @@ public class HugegraphWriter extends Writer {
                     elemBuilder = new EdgeBuilder(taskConfig);
                     break;
             }
+            taskExecutor= new TaskExecutor(1, elemBuilder);
             log.info("ElemBuilder Type: {}", elemBuilder.getClass());
         }
 
@@ -90,22 +92,47 @@ public class HugegraphWriter extends Writer {
 
         @Override
         public void startWrite(RecordReceiver lineReceiver) {
-            log.info("hugegraph start write...");
+            log.info("HugeGraph start write...");
             Record r = null;
             final int batchSize = 32;
-            List<GraphElement> records = new ArrayList<>(batchSize);
+//            List<GraphElement> records = new ArrayList<>(batchSize);
+//            List<GraphElement> errors = new ArrayList<>();
+//
+//            while((r = lineReceiver.getFromReader()) != null){
+//                GraphElement elem = elemBuilder.build(r);
+//                records.add(elem);
+//                if(records.size() >= batchSize){
+//                    List<GraphElement> err = taskExecutor.submitBatch(records, type);
+//                    records = new ArrayList<>(batchSize);
+//                    if(err != null) errors.addAll(err);
+//                }
+//            }
+//            if(!records.isEmpty()){
+//                List<GraphElement> err = taskExecutor.submitBatch(records, type);
+//                if(err != null) errors.addAll(err);
+//            }
+
+            List<Record> records = new ArrayList<>(batchSize);
+            List<Record> errors = new ArrayList<>();
 
             while((r = lineReceiver.getFromReader()) != null){
-                GraphElement elem = elemBuilder.build(r);
-                records.add(elem);
+                records.add(r);
                 if(records.size() >= batchSize){
-                    taskExecutor.submitBatch(records, type);
+                    List<Record> err = taskExecutor.submitBatch(records, type);
                     records = new ArrayList<>(batchSize);
+                    if(err != null) errors.addAll(err);
                 }
             }
             if(!records.isEmpty()){
-                taskExecutor.submitBatch(records, type);
+                List<Record> err = taskExecutor.submitBatch(records, type);
+                if(err != null) errors.addAll(err);
             }
+
+            log.warn("Dirty record size:{}, [{}]", errors.size(), errors);
+            for(Record err : errors){
+                collector.collectDirtyRecord(err, "Element writer failed! Please check whether has corresponding vertex for edge or vertex config.");
+            }
+
         }
 
         @Override

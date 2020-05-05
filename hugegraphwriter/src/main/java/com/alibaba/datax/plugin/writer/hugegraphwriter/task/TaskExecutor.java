@@ -1,5 +1,7 @@
 package com.alibaba.datax.plugin.writer.hugegraphwriter.task;
 
+import com.alibaba.datax.common.element.Record;
+import com.alibaba.datax.plugin.writer.hugegraphwriter.builder.ElemBuilder;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.client.ClientHolder;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.ElemType;
 import com.baidu.hugegraph.driver.GraphManager;
@@ -23,22 +25,32 @@ public class TaskExecutor {
     ExecutorService batchService;
     BatchInsertTask batchInsertTask;
     InsertTask insertTask;
+    ElemBuilder builder;
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public TaskExecutor(int threads){
-        batchService = Executors.newFixedThreadPool(threads);
+//    public TaskExecutor(int threads){
+//        batchService = Executors.newFixedThreadPool(threads);
+//    }
+
+    public TaskExecutor(int threads, ElemBuilder builder){
+        this.batchService = Executors.newFixedThreadPool(threads);
+        this.builder = builder;
     }
 
-    public List<GraphElement> submitBatch(List<? extends GraphElement> records, ElemType type){
-        List<GraphElement> errorRecords = null;
-        batchInsertTask = new BatchInsertTask(records, type);
+    public List<Record> submitBatch(List<Record> records, ElemType type){
+        List<Record> errorRecords = null;
+        List<GraphElement> elemRecords = new ArrayList<>(records.size());
+        for(Record record : records)
+            elemRecords.add(this.builder.build(record));
+
+        batchInsertTask = new BatchInsertTask(elemRecords, type);
         try {
             CompletableFuture.runAsync(batchInsertTask, batchService).get();
         } catch (Exception e){
             e.printStackTrace();
             errorRecords = new ArrayList<>();
-            for(GraphElement elem : records){
-                GraphElement retElem = submitOne(elem, type);
+            for(Record record : records){
+                Record retElem = submitOne(record, type);
                 if(retElem != null)
                     errorRecords.add(retElem);
             }
@@ -47,14 +59,14 @@ public class TaskExecutor {
         return errorRecords;
     }
 
-    public GraphElement submitOne(GraphElement element, ElemType type){
-        GraphElement elem = null;
-        insertTask = new InsertTask(element, type);
+    public Record submitOne(Record r, ElemType type){
+        Record elem = null;
+        insertTask = new InsertTask(builder.build(r), type);
         try{
             CompletableFuture.runAsync(insertTask, batchService).get();
         }catch (Exception e){
             e.printStackTrace();
-            elem = element;
+            elem = r;
         }
         return elem;
     }
