@@ -75,8 +75,7 @@ public class SchemaBuilder {
     }
 
 
-    // TODO 2: user inner builder,ColumnConfigOlder to replace List<Configuration>
-    // TODO: test configuration.get() performance and seek for possible optimization
+    // TODO: use inner builder,ColumnConfigOlder to replace List<Configuration>
     public VertexLabel createVertexSchema(){
         String elemLabel = this.config.getString(Key.LABEL);
         IdStrategy idStrategy = IdStrategy.valueOf(this.config.getString(Key.ID_STRATEGY, "AUTO"));
@@ -96,7 +95,7 @@ public class SchemaBuilder {
             }
 
             Boolean nullable = col.getBool(Key.COLUMN_NULLABLE, false);
-            if(nullable == true){
+            if(nullable){
                 nullableProp.add(name);
             }
         }
@@ -144,7 +143,7 @@ public class SchemaBuilder {
             }
 
             Boolean nullable = col.getBool(Key.COLUMN_NULLABLE, false);
-            if(nullable == true){
+            if(nullable){
                 nullableProp.add(name);
             }
         }

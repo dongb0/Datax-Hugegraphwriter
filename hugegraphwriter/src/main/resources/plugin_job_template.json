@@ -1,8 +1,8 @@
 {
   "name": "hugegraphwriter",
   "parameter": {
-    "host": "139.196.100.210",
-    "port": 12345,
+    "host": "localhost",
+    "port": 8080,
     "graph": "hugegraph",
     "label": "edge-test-label",
     "elementType": "VERTEX",
@@ -11,7 +11,6 @@
     "labelType": "string",
     "writeMode": "INSERT",
     "idStrategy": "CUSTOMIZE",
-
     "column": [
       {
         "name": "id",

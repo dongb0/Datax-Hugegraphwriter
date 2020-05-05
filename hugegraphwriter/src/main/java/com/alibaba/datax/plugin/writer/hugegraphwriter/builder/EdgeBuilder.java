@@ -50,7 +50,7 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
             }
         }
         if(edge.sourceId() == null || edge.targetId() == null){
-            // throws  Must set sourceId and targetId
+            // throw Must set sourceId and targetId
         }
         return edge;
     }

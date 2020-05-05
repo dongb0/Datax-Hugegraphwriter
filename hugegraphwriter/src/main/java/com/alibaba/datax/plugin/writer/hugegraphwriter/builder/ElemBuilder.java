@@ -23,7 +23,6 @@ public abstract class ElemBuilder <GE extends GraphElement, ES extends ElementSt
     public abstract GE build(Record record);
 
     protected int parseColumnIndex(String name){
-
         String valStr = (String) struct.getProperties().get(name).value;
         return Integer.parseInt(valStr.substring(1, valStr.length() - 1));
     }
@@ -64,7 +63,7 @@ public abstract class ElemBuilder <GE extends GraphElement, ES extends ElementSt
         }
         struct.setLabel(config.getString(Key.LABEL));
 
-        // TODO parse index might support prefix later
+        // TODO parse index support prefix
         Map<String, ElementStruct.ColumnsConfHolder> properties = new HashMap<>();
         List<Configuration> columnConfigs = config.getListConfiguration(Key.COLUMN);
         for(Configuration conf: columnConfigs) {
@@ -81,8 +80,5 @@ public abstract class ElemBuilder <GE extends GraphElement, ES extends ElementSt
 
         return struct;
     }
-
-
-
 
 }

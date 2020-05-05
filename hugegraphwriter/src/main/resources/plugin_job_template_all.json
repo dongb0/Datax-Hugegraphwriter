@@ -10,8 +10,8 @@
     "dstLabel": "test-dstLabel-     ",
     "writeMode": "INSERT, UPDATE(what to do when same id appears, append? rewrite?), SKIP       1)insert",
 
-    "allowDuplicate": "false  //default",
-    "idStrategy": "2)primaryKey (user specify properties to concatenate as primary key, then AT LEAST ONE id in column is required), 3)customize",
+    "allowDuplicateEdge": "false  //default",
+    "idStrategy": "1)primaryKey (user specify properties to concatenate as primary key, then AT LEAST ONE id in column is required), 2)customize",
 
     "column": [
       {
