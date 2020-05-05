@@ -36,18 +36,18 @@ public class GraphManagerTest {
         vertex_sb.createPropertySchemas();
         vertex_sb.createVertexSchema();
 
-        Vertex v = new Vertex("user");
+        Vertex v = new Vertex("InsertTestV_1");
         v.id(-776);
         v.property("name", "657hula");
         Vertex resV = gm.addVertex(v);
         log.info(resV.toString());
 
-        v = new Vertex("user");
+        v = new Vertex("InsertTestV_1");
         v.id(-63214);
         resV = gm.addVertex(v);
         log.info(resV.toString());
 
-        v = new Vertex("user");
+        v = new Vertex("InsertTestV_1");
         v.id(-214);
         resV = gm.addVertex(v);
         log.info(resV.toString());
@@ -55,21 +55,21 @@ public class GraphManagerTest {
 
     @Test
     public void insertEdgeTest(){
-        log.info("\n\nInsert V/E Test 1");
+        System.out.println("\n\nInsert V/E Test 1");
 
         insertVertexTest();
         edge_sb.createPropertySchemas();
         edge_sb.createEdgeSchema();
-        Edge e = new Edge("knows");
-        e.sourceId(-63214); e.sourceLabel("user");
-        e.targetId(-214); e.targetLabel("user");
+        Edge e = new Edge("InsertTestE_1");
+        e.sourceId(-63214); e.sourceLabel("InsertTestV_1");
+        e.targetId(-214); e.targetLabel("InsertTestV_1");
         log.info("building edge: {}", e.toString());
         Edge resE = gm.addEdge(e);
         log.info("return Edge: {}",resE.toString());
         assert resE.id() != null;
 
-        e.sourceId(-776); e.sourceLabel("user");
-        e.targetId(-214); e.targetLabel("user");
+        e.sourceId(-776); e.sourceLabel("InsertTestV_1");
+        e.targetId(-214); e.targetLabel("InsertTestV_1");
         e.property("name", "hanasei");
         resE = gm.addEdge(e);
         log.info("return Edge: {}",resE.toString());
@@ -95,7 +95,7 @@ public class GraphManagerTest {
 
         log.info("v1: {}, v2: {}", v1.toString(), v2.toString());
         List<Vertex> retVertice = gm.addVertices(Arrays.asList(v1, v2));
-        //TODO mysterious return type, id changed from Long to String
+        //id changed from Long to String ?
 
         assert Integer.parseInt((String)retVertice.get(0).id()) == -1001;
         assert Integer.parseInt((String)retVertice.get(1).id()) == -1002;
@@ -103,7 +103,7 @@ public class GraphManagerTest {
 
     @Test
     public void insertEdgeTest2(){
-        log.info("\n\nInsert V/E Test 2");
+        System.out.println("\n\nInsert V/E Test 2");
 
         insertVertexTest2();
 

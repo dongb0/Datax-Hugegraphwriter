@@ -19,7 +19,7 @@ public class EdgeBuilderTest {
 
     @Test
     public void EdgeBuilderTest(){
-        log.info("\n\nEdgeBuilderTest 1...");
+        System.out.println("\n\nEdgeBuilderTest 1...");
         EdgeBuilder eBuilder = new EdgeBuilder(config);
         Record record = new DefaultRecord();
         record.addColumn(new LongColumn(4396));

@@ -104,8 +104,7 @@ public class SchemaBuilder {
                 .properties(propName.toArray(new String[propName.size()]))
                 .nullableKeys(nullableProp.toArray(new String[nullableProp.size()]));
 
-        log.info("Vertex Schema ready to build: properties:{}, nullable:{}, idStrategy:{}", propName, nullableProp, idStrategy);
-        // TODO  customizeId && primaryKeys should have id column; primaryKeys AT LEAST one; customize EXACTLY one
+//        log.info("Vertex Schema ready to build: properties:{}, nullable:{}, idStrategy:{}", propName, nullableProp, idStrategy);
         switch(idStrategy){
             case PRIMARY_KEY:
                 // not support yet

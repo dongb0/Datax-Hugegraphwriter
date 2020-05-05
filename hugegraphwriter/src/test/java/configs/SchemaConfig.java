@@ -5,7 +5,7 @@ public class SchemaConfig {
             "                        \"host\": \"localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
-            "                        \"label\": \"user\",\n" +
+            "                        \"label\": \"InsertTestV_1\",\n" +
             "                        \"elementType\": \"VERTEX\",\n" +
             "                        \"idStrategy\": \"CUSTOMIZE\",                    \n" +
             "                        \"column\": [\n" +
@@ -33,10 +33,10 @@ public class SchemaConfig {
             "                        \"host\": \"1localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
-            "                        \"label\": \"knows\",\n" +
+            "                        \"label\": \"InsertTestE_1\",\n" +
             "                        \"elementType\": \"EDGE\",\n" +
-            "                        \"srcLabel\": \"user\",\n" +
-            "                        \"dstLabel\": \"user\",\n" +
+            "                        \"srcLabel\": \"InsertTestV_1\",\n" +
+            "                        \"dstLabel\": \"InsertTestV_1\",\n" +
             "                        \"writeMode\": \"INSERT\",                    \n" +
             "                        \"idStrategy\": \"PRIMARY_KEY\",                    \n" +
             "                        \"column\": [\n" +

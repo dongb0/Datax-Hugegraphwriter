@@ -18,7 +18,7 @@ public class VertexBuilderTest {
 
     @Test
     public void vertexBuilderTest(){
-        log.info("\n\nVertexBuilder Test 1...");
+        System.out.println("\n\nVertexBuilder Test 1...");
         VertexBuilder vbuilder = new VertexBuilder(config);
         Record record = new DefaultRecord();
         record.addColumn(new LongColumn(2048));

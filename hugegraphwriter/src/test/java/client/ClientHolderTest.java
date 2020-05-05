@@ -21,7 +21,7 @@ public class ClientHolderTest {
 
     @Test
     public void clientHolder(){
-        log.info("\n\nClientHolder Test 1...");
+        System.out.println("\n\nClientHolder Test 1...");
 
         Configuration config = testConfig.clone();
         log.info("reading config :\n{}", config.toJSON());
