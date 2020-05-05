@@ -142,7 +142,7 @@ public class SchemaConfig {
             "                                \"value\": \"{0}\",\n" +
             "                                \"valueType\": \"int\",\n" +
             "                                \"cardinality\": \"single\",\n" +
-            "                                \"propertyType\": \"vertexProperty\",\n" +
+            "                                \"propertyType\": \"vertexPrimaryProperty\",\n" +
             "                                \"indexing\": true\n" +
             "                            },\n" +
             "                            {\n" +
@@ -150,8 +150,16 @@ public class SchemaConfig {
             "                                \"value\": \"{1}\",\n" +
             "                                \"valueType\": \"string\",\n" +
             "                                \"cardinality\": \"single\",\n" +
-            "                                \"propertyType\": \"vertexProperty\",\n" +
+            "                                \"propertyType\": \"vertexPrimaryProperty\",\n" +
             "                                \"nullable\": false\n" +
+            "                            },\n" +
+            "                            {\n" +
+            "                                \"name\": \"age\",\n" +
+            "                                \"value\": \"{2}\",\n" +
+            "                                \"valueType\": \"int\",\n" +
+            "                                \"cardinality\": \"single\",\n" +
+            "                                \"propertyType\": \"vertexProperty\",\n" +
+            "                                \"nullable\": true\n" +
             "                            }\n" +
             "                        ]\n" +
             "                    }";

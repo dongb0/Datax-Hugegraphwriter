@@ -88,10 +88,10 @@ public class SchemaBuilder {
             String name = col.getString(Key.COLUMN_NAME);
             PropertyType pType = PropertyType.valueOf(
                     col.getString(Key.COLUMN_PROPERTY_TYPE, "vertexProperty"));
-            if(pType == PropertyType.vertexId) {
+            if(pType == PropertyType.vertexId || pType == PropertyType.vertexPrimaryProperty) {
                 primaryKeys.add(name);
             }
-            if(pType == PropertyType.vertexProperty){
+            if(pType == PropertyType.vertexProperty|| pType == PropertyType.vertexPrimaryProperty){
                 propName.add(name);
             }
 
@@ -104,20 +104,23 @@ public class SchemaBuilder {
                 .properties(propName.toArray(new String[propName.size()]))
                 .nullableKeys(nullableProp.toArray(new String[nullableProp.size()]));
 
+        log.info("Vertex Schema ready to build: properties:{}, nullable:{}, idStrategy:{}", propName, nullableProp, idStrategy);
         // TODO  customizeId && primaryKeys should have id column; primaryKeys AT LEAST one; customize EXACTLY one
         switch(idStrategy){
             case PRIMARY_KEY:
                 // not support yet
-                assert primaryKeys.size() >= 1: "must set primaryKeys when id strategy is primary_keys";
+                assert primaryKeys.size() >= 1: "must set primaryKeys when id strategy is primary_keys.\t" +
+                        "PrimaryKeys:" + primaryKeys + "\t" +
+                        "Property:" + propName;
                 builder.primaryKeys(primaryKeys.toArray(new String[primaryKeys.size()])).usePrimaryKeyId();
                 break;
             case CUSTOMIZE:
                 // TODO support string Id, UUID
-                assert primaryKeys.size() == 1: "Customize ID receives only 1 id column but get " + primaryKeys.size() ;
+                assert primaryKeys.size() == 1: "Customize ID receives only 1 id column but get " + primaryKeys.size();
                 builder.useCustomizeNumberId();
                 break;
         }
-        log.info("Create Vertex Schema -> property:{}, nullable:{}, idStrategy:{}", propName, nullableProp, idStrategy);
+        log.info("Create Vertex Schema -> Label:{}, property:{}, nullable:{}, idStrategy:{}", elemLabel, propName, nullableProp, idStrategy);
         return builder.ifNotExist().create();
     }
 

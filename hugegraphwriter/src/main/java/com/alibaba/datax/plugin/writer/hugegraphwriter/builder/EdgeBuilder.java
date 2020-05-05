@@ -8,6 +8,8 @@ import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.EdgeStruct;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.ElementStruct;
 import com.baidu.hugegraph.structure.graph.Edge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
@@ -23,6 +25,7 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
         edge.sourceLabel(struct.getSrcLabel());
         edge.targetLabel(struct.getDstLabel());
 
+//        List<Object> propsForVID = new ArrayList<>();
         for(Map.Entry<String, ElementStruct.ColumnsConfHolder> prop : struct.getProperties().entrySet()){
             PropertyType pType = prop.getValue().propertyType;
             //TODO optimize parseColumnIndex
@@ -43,6 +46,9 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
                         break;
                     case edgeProperty:
                         edge.property(prop.getKey(), parseColumnType(prop.getValue(), col));
+                        break;
+                    case vertexPrimaryProperty:
+//                        propsForVID.add();
                         break;
                     default:
                         // throws Exception
