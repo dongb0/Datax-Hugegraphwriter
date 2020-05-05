@@ -81,8 +81,8 @@ public class HugegraphWriter extends Writer {
                     elemBuilder = new EdgeBuilder(taskConfig);
                     break;
             }
-            taskExecutor = new TaskExecutor(1, elemBuilder);
             collector = getTaskPluginCollector();
+            taskExecutor = new TaskExecutor(1, elemBuilder, collector);
             log.info("ElemBuilder Type: {}", elemBuilder.getClass());
         }
 
@@ -97,28 +97,16 @@ public class HugegraphWriter extends Writer {
             Record r = null;
             final int batchSize = 32;
             List<Record> records = new ArrayList<>(batchSize);
-            List<Record> errors = new ArrayList<>();
 
             while ((r = lineReceiver.getFromReader()) != null) {
                 records.add(r);
                 if (records.size() >= batchSize) {
-                    List<Record> err = taskExecutor.submitBatch(records, type);
+                    taskExecutor.submitBatch(records, type);
                     records = new ArrayList<>(batchSize);
-                    if (err != null) {
-                        errors.addAll(err);
-                    }
                 }
             }
             if (!records.isEmpty()) {
-                List<Record> err = taskExecutor.submitBatch(records, type);
-                if (err != null) {
-                    errors.addAll(err);
-                }
-            }
-
-            log.info("Dirty record size:{}, [{}]", errors.size(), errors);
-            for (Record err : errors) {
-                collector.collectDirtyRecord(err, new Exception("Element writer failed!"));
+                taskExecutor.submitBatch(records, type);
             }
             log.info("HugeGraph complete write...");
         }

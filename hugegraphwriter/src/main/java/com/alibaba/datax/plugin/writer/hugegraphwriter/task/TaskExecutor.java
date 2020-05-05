@@ -30,17 +30,14 @@ public class TaskExecutor {
     TaskPluginCollector collector;
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-//    public TaskExecutor(int threads){
-//        batchService = Executors.newFixedThreadPool(threads);
-//    }
 
-    public TaskExecutor(int threads, ElemBuilder builder){
+    public TaskExecutor(int threads, ElemBuilder builder, TaskPluginCollector collector){
         this.batchService = Executors.newFixedThreadPool(threads);
         this.builder = builder;
+        this.collector = collector;
     }
 
-    public List<Record> submitBatch(List<Record> records, ElemType type){
-        List<Record> errorRecords = null;
+    public void submitBatch(List<Record> records, ElemType type){
         List<GraphElement> elemRecords = new ArrayList<>(records.size());
         for(Record record : records)
             elemRecords.add(this.builder.build(record));
@@ -50,27 +47,25 @@ public class TaskExecutor {
             CompletableFuture.runAsync(batchInsertTask, batchService).get();
         } catch (Exception e){
             e.printStackTrace();
-            errorRecords = new ArrayList<>();
             for(Record record : records){
-                Record retElem = submitOne(record, type);
-                if(retElem != null)
-                    errorRecords.add(retElem);
+                try {
+                    submitOne(record, type);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    collector.collectDirtyRecord(record, ex);
+                }
             }
-            log.warn("Submit batch fail. Failed record(s) size:{}\n{}", errorRecords.size(), errorRecords);
         }
-        return errorRecords;
     }
 
-    public Record submitOne(Record r, ElemType type){
-        Record elem = null;
+    public void submitOne(Record r, ElemType type) throws Exception{
         insertTask = new InsertTask(builder.build(r), type);
         try{
             CompletableFuture.runAsync(insertTask, batchService).get();
         }catch (Exception e){
             e.printStackTrace();
-            elem = r;
+            throw e;
         }
-        return elem;
     }
 
     public void shutdown(){
