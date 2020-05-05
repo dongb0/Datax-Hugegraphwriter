@@ -24,7 +24,7 @@ public class HugegraphWriter extends Writer {
 
     private static final Logger log = LoggerFactory.getLogger(HugegraphWriter.class);
 
-    public static class Job extends Writer.Job{
+    public static class Job extends Writer.Job {
 
         private Configuration jobConfig = null;
         private SchemaBuilder schema = null;
@@ -47,7 +47,7 @@ public class HugegraphWriter extends Writer {
         public List<Configuration> split(int mandatoryNumber) {
             log.info("Hugegraph Split begin...");
             List<Configuration> configList = new ArrayList<>();
-            for(int i = 0; i < mandatoryNumber; i++){
+            for (int i = 0; i < mandatoryNumber; i++) {
                 configList.add(this.jobConfig.clone());
             }
             log.info("Hugegraph Split end...");
@@ -60,20 +60,20 @@ public class HugegraphWriter extends Writer {
         }
     }
 
-    public static class Task extends Writer.Task{
+    public static class Task extends Writer.Task {
 
         ElemBuilder elemBuilder = null;
         Configuration taskConfig = null;
         ElemType type = null;
         TaskExecutor taskExecutor = null;
-        TaskPluginCollector collector = getTaskPluginCollector();
+        TaskPluginCollector collector = null;
 
         @Override
         public void init() {
             log.info("hugegraph Task init...");
             taskConfig = getPluginJobConf();
             type = ElemType.valueOf(taskConfig.getString(Key.ELEMENT_TYPE));
-            switch(type){
+            switch (type) {
                 case VERTEX:
                     elemBuilder = new VertexBuilder(taskConfig);
                     break;
@@ -81,7 +81,8 @@ public class HugegraphWriter extends Writer {
                     elemBuilder = new EdgeBuilder(taskConfig);
                     break;
             }
-            taskExecutor= new TaskExecutor(1, elemBuilder);
+            taskExecutor = new TaskExecutor(1, elemBuilder);
+            collector = getTaskPluginCollector();
             log.info("ElemBuilder Type: {}", elemBuilder.getClass());
         }
 
@@ -95,44 +96,31 @@ public class HugegraphWriter extends Writer {
             log.info("HugeGraph start write...");
             Record r = null;
             final int batchSize = 32;
-//            List<GraphElement> records = new ArrayList<>(batchSize);
-//            List<GraphElement> errors = new ArrayList<>();
-//
-//            while((r = lineReceiver.getFromReader()) != null){
-//                GraphElement elem = elemBuilder.build(r);
-//                records.add(elem);
-//                if(records.size() >= batchSize){
-//                    List<GraphElement> err = taskExecutor.submitBatch(records, type);
-//                    records = new ArrayList<>(batchSize);
-//                    if(err != null) errors.addAll(err);
-//                }
-//            }
-//            if(!records.isEmpty()){
-//                List<GraphElement> err = taskExecutor.submitBatch(records, type);
-//                if(err != null) errors.addAll(err);
-//            }
-
             List<Record> records = new ArrayList<>(batchSize);
             List<Record> errors = new ArrayList<>();
 
-            while((r = lineReceiver.getFromReader()) != null){
+            while ((r = lineReceiver.getFromReader()) != null) {
                 records.add(r);
-                if(records.size() >= batchSize){
+                if (records.size() >= batchSize) {
                     List<Record> err = taskExecutor.submitBatch(records, type);
                     records = new ArrayList<>(batchSize);
-                    if(err != null) errors.addAll(err);
+                    if (err != null) {
+                        errors.addAll(err);
+                    }
                 }
             }
-            if(!records.isEmpty()){
+            if (!records.isEmpty()) {
                 List<Record> err = taskExecutor.submitBatch(records, type);
-                if(err != null) errors.addAll(err);
+                if (err != null) {
+                    errors.addAll(err);
+                }
             }
 
-            log.warn("Dirty record size:{}, [{}]", errors.size(), errors);
-            for(Record err : errors){
-                collector.collectDirtyRecord(err, "Element writer failed! Please check whether has corresponding vertex for edge or vertex config.");
+            log.info("Dirty record size:{}, [{}]", errors.size(), errors);
+            for (Record err : errors) {
+                collector.collectDirtyRecord(err, new Exception("Element writer failed!"));
             }
-
+            log.info("HugeGraph complete write...");
         }
 
         @Override

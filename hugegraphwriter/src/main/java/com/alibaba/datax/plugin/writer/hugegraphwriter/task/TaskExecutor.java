@@ -1,6 +1,7 @@
 package com.alibaba.datax.plugin.writer.hugegraphwriter.task;
 
 import com.alibaba.datax.common.element.Record;
+import com.alibaba.datax.common.plugin.TaskPluginCollector;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.builder.ElemBuilder;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.client.ClientHolder;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.ElemType;
@@ -26,6 +27,7 @@ public class TaskExecutor {
     BatchInsertTask batchInsertTask;
     InsertTask insertTask;
     ElemBuilder builder;
+    TaskPluginCollector collector;
     Logger log = LoggerFactory.getLogger(this.getClass());
 
 //    public TaskExecutor(int threads){
