@@ -1,16 +1,27 @@
 package com.alibaba.datax.plugin.writer.hugegraphwriter.struct;
 
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.CardinalityType;
-import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.IdStrategy;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.PropertyType;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.ValueType;
+import com.alibaba.datax.plugin.writer.hugegraphwriter.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ElementStruct {
     protected String label = null;
-    protected Map<String, ColumnsConfHolder> columnsProperties = new HashMap<>();
+
+    public List<Pair<String, ColumnsConfHolder>> getColumnsProperties() {
+        return columnsProperties;
+    }
+
+    public void setColumnsProperties(List<Pair<String, ColumnsConfHolder>> columnsProperties) {
+        this.columnsProperties = columnsProperties;
+    }
+
+    protected List<Pair<String, ColumnsConfHolder>> columnsProperties = new ArrayList<>();
 
     public String getLabel() {
         return label;
@@ -20,16 +31,8 @@ public class ElementStruct {
         this.label = label;
     }
 
-    public Map<String, ColumnsConfHolder> getProperties() {
-        return columnsProperties;
-    }
-
-    public void setProperties(Map<String, ColumnsConfHolder> properties) {
-        this.columnsProperties = properties;
-    }
-
     public static class ColumnsConfHolder{
-        public Object value;
+        public String value;
         public ValueType valueType;
         public CardinalityType cardinalityType;
         public PropertyType propertyType;

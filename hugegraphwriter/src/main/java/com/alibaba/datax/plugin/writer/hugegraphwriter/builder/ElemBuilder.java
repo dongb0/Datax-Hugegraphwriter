@@ -5,12 +5,15 @@ import com.alibaba.datax.common.element.Record;
 import com.alibaba.datax.common.util.Configuration;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.*;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.EdgeStruct;
+import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.ElementStruct.ColumnsConfHolder;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.ElementStruct;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.VertexStruct;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.util.HugegraphLogger;
+import com.alibaba.datax.plugin.writer.hugegraphwriter.util.Pair;
 import com.baidu.hugegraph.structure.GraphElement;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +23,15 @@ public abstract class ElemBuilder <GE extends GraphElement, ES extends ElementSt
     Logger log = HugegraphLogger.get(ElemBuilder.class);
     protected ES struct;
 
-    public abstract GE build(Record record);
+    public abstract GE build(Record record) throws Exception;
 
-    protected int parseColumnIndex(String name){
-        String valStr = (String) struct.getProperties().get(name).value;
-        return Integer.parseInt(valStr.substring(1, valStr.length() - 1));
+    //TODO reg match
+    protected int getMappingColumnIndex(ColumnsConfHolder cch){
+        String str = cch.value;
+        return Integer.parseInt(str.substring(1, str.length() - 1));
     }
 
-    protected Object parseColumnType(ElementStruct.ColumnsConfHolder cch, Column col){
+    protected Object parseColumnType(ColumnsConfHolder cch, Column col){
         switch (cch.valueType){
             case INT:
             case LONG:
@@ -64,19 +68,19 @@ public abstract class ElemBuilder <GE extends GraphElement, ES extends ElementSt
         struct.setLabel(config.getString(Key.LABEL));
 
         // TODO parse index support prefix
-        Map<String, ElementStruct.ColumnsConfHolder> properties = new HashMap<>();
+        List<Pair<String, ColumnsConfHolder>> properties = new ArrayList<>();
         List<Configuration> columnConfigs = config.getListConfiguration(Key.COLUMN);
         for(Configuration conf: columnConfigs) {
-            ElementStruct.ColumnsConfHolder col = new ElementStruct.ColumnsConfHolder();
+            ColumnsConfHolder col = new ElementStruct.ColumnsConfHolder();
             col.value = conf.getString(Key.COLUMN_VALUE);
             col.valueType = ValueType.valueOf(conf.getString(Key.COLUMN_VALUE_TYPE).toUpperCase());
             col.cardinalityType = CardinalityType.valueOf(conf.getString(Key.COLUMN_CARDINALITY, "single").toUpperCase());
             col.propertyType = PropertyType.valueOf(conf.getString(Key.COLUMN_PROPERTY_TYPE));
             col.nullable = conf.getBool(Key.COLUMN_NULLABLE, false);
             col.indexing = conf.getBool(Key.COLUMN_INDEXING, true);
-            properties.put(conf.getString(Key.COLUMN_NAME), col);
+            properties.add(new Pair<>(conf.getString(Key.COLUMN_NAME), col));
         }
-        struct.setProperties(properties);
+        struct.setColumnsProperties(properties);
 
         return struct;
     }
