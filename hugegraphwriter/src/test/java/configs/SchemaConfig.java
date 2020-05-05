@@ -129,21 +129,20 @@ public class SchemaConfig {
             "                        ]\n" +
             "                    }";
 
-    public static String jsonConfig_TaskTestV_remote = "{\n" +
-            "                        \"host\": \"139.196.100.210\",\n" +
+    public static String jsonConfig_Schema_PrimaryKeysV = "{\n" +
+            "                        \"host\": \"localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
-            "                        \"label\": \"task-test\",\n" +
+            "                        \"label\": \"schema_testV\",\n" +
             "                        \"elementType\": \"VERTEX\",\n" +
-            "                        \"idStrategy\": \"CUSTOMIZE\",                    \n" +
+            "                        \"idStrategy\": \"PRIMARY_KEY\",\n" +
             "                        \"column\": [\n" +
             "                            {\n" +
             "                                \"name\": \"id\",\n" +
             "                                \"value\": \"{0}\",\n" +
             "                                \"valueType\": \"int\",\n" +
             "                                \"cardinality\": \"single\",\n" +
-            "                                \"propertyType\": \"vertexId\",\n" +
-            "                                \"nullable\": false,\n" +
+            "                                \"propertyType\": \"vertexProperty\",\n" +
             "                                \"indexing\": true\n" +
             "                            },\n" +
             "                            {\n" +
@@ -152,21 +151,21 @@ public class SchemaConfig {
             "                                \"valueType\": \"string\",\n" +
             "                                \"cardinality\": \"single\",\n" +
             "                                \"propertyType\": \"vertexProperty\",\n" +
-            "                                \"nullable\": true\n" +
+            "                                \"nullable\": false\n" +
             "                            }\n" +
             "                        ]\n" +
             "                    }";
 
-    public static String jsonConfig_TaskTestE_remote = "{\n" +
-            "                        \"host\": \"139.196.100.210\",\n" +
+    public static String jsonConfig_Schema_PrimaryKeysE= "{\n" +
+            "                        \"host\": \"localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
-            "                        \"label\": \"task-test-E\",\n" +
+            "                        \"label\": \"schema_testE\",\n" +
             "                        \"elementType\": \"EDGE\",\n" +
-            "                        \"srcLabel\": \"task-test\",\n" +
-            "                        \"dstLabel\": \"task-test\",\n" +
+            "                        \"srcLabel\": \"schema_testV\",\n" +
+            "                        \"dstLabel\": \"schema_testV\",\n" +
             "                        \"writeMode\": \"INSERT\",                    \n" +
-            "                        \"idStrategy\": \"CUSTOMIZE\",                    \n" +
+            "                        \"idStrategy\": \"PRIMARY_KEY\",                    \n" +
             "                        \"column\": [\n" +
             "                            {\n" +
             "                                \"name\": \"src_id\",\n" +
@@ -192,4 +191,5 @@ public class SchemaConfig {
             "                            }" +
             "                        ]\n" +
             "                    }";
+
 }

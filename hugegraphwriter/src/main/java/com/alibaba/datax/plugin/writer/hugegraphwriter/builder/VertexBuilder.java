@@ -27,8 +27,6 @@ public class VertexBuilder extends ElemBuilder<Vertex, VertexStruct> {
         Vertex vertex = new Vertex(struct.getLabel());
         Map<String, ColumnsConfHolder> properties = this.struct.getProperties();
         for(Map.Entry<String, ColumnsConfHolder> prop : properties.entrySet()){
-            // TODO assert this.struct.properties contains Key
-            // else throws exception
 
             int index = parseColumnIndex(prop.getKey());
             Column col = record.getColumn(index);

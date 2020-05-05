@@ -5,6 +5,7 @@ public enum PropertyType {
     vertexProperty,
     edgeProperty,
     srcId,
-    dstId;
+    dstId,
+    vertexPrimaryProperty;
 
 }

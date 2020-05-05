@@ -19,7 +19,7 @@
         "value": "{0},1}..., only string type are allowed to concatenate, e.g.,prefix-{0}-suffix",
         "valueType": "int, long, float, double, string, boolean",
         "cardinality": "single list set",
-        "propertyType": "vertexId, vertexProperty, edgeProperty, srcId, dstId // if not set, fill in V/E property according to elementType; At least 1 id column is required(pending",
+        "propertyType": "vertexId, vertexProperty, edgeProperty, srcId, dstId (edge can have vertexPrimaryProperty if isStrategy is primaryKeys)// if not set, fill in V/E property according to elementType; At least 1 id column is required(pending",
         "nullable": "true/false  //can not be id",
         "indexing": "true:boolean/false   //default true, set false will disable global search for specific V/E"
       }

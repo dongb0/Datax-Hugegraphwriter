@@ -83,6 +83,7 @@ public class SchemaBuilder {
         List<String> propName = new ArrayList<>(), nullableProp = new ArrayList<>();
         List<String> primaryKeys = new ArrayList<>();
 
+        //TODO read from ElemBuilder
         for(Configuration col : columns){
             String name = col.getString(Key.COLUMN_NAME);
             PropertyType pType = PropertyType.valueOf(
@@ -105,17 +106,14 @@ public class SchemaBuilder {
 
         // TODO  customizeId && primaryKeys should have id column; primaryKeys AT LEAST one; customize EXACTLY one
         switch(idStrategy){
-            case AUTO:
-                //not support yet
-                break;
             case PRIMARY_KEY:
                 // not support yet
-                assert primaryKeys.isEmpty() == false;
-                builder.primaryKeys(primaryKeys.toArray(new String[primaryKeys.size()]));
+                assert primaryKeys.size() >= 1: "must set primaryKeys when id strategy is primary_keys";
+                builder.primaryKeys(primaryKeys.toArray(new String[primaryKeys.size()])).usePrimaryKeyId();
                 break;
             case CUSTOMIZE:
-                // TODO support string Id, Number Id, UUID
-                assert primaryKeys.size() == 1: "Customize ID receives only 1 id column" ;
+                // TODO support string Id, UUID
+                assert primaryKeys.size() == 1: "Customize ID receives only 1 id column but get " + primaryKeys.size() ;
                 builder.useCustomizeNumberId();
                 break;
         }
