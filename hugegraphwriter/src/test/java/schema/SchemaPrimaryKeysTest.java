@@ -32,8 +32,8 @@ public class SchemaPrimaryKeysTest {
         assert retV.property("name").equals("test1"): "expected property name == test1, get " + retV.property("name");
     }
 
-//    @Test
-    public void generateVertexIdWithPrimaryKeys(){
-        List<Pair<String, Integer>> list = new ArrayList<>();
+    @Test
+    public void createEdgeTest_VertexPrimaryKeys(){
+
     }
 }

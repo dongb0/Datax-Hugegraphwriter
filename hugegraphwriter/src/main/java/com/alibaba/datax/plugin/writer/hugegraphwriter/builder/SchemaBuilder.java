@@ -158,9 +158,11 @@ public class SchemaBuilder {
                 .properties(propName.toArray(new String[propName.size()]))
                 .nullableKeys(nullableProp.toArray(new String[nullableProp.size()]));
 
+        //TODO why does allowDuplicate use primaryKeys->vertexId property?  delete this section?
         if(allowDuplicate){
-            builder.multiTimes()
-                    .sortKeys(primaryKeys.toArray(new String[primaryKeys.size()]));
+//            builder.multiTimes()
+//                    .sortKeys(primaryKeys.toArray(new String[primaryKeys.size()]));
+            log.warn("Duplicate Edges NOT support yet!!");
         }
         log.info("EdgeSchema -> elemLabel: {}, srcLabel: {}, dstLabel: {}, allowDuplicate: {}", elemLabel, srcLabel, dstLabel, allowDuplicate);
         return builder.ifNotExist().create();

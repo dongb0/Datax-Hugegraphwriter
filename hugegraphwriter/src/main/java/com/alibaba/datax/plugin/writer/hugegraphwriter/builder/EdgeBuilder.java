@@ -40,7 +40,7 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
         edge.sourceLabel(struct.getSrcLabel());
         edge.targetLabel(struct.getDstLabel());
 
-        List<Object> vertexPKName = new ArrayList<>();
+        List<Object> srcPKprops = new ArrayList<>(), dstPKprops = new ArrayList<>();
         List<Pair<String, ColumnsConfHolder>> properties = struct.getColumnsProperties();
         for (Pair<String, ColumnsConfHolder> pair : properties) {
             String propName = pair.getKey();
@@ -66,21 +66,27 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
                     case edgeProperty:
                         edge.property(propName, parseColumnType(cch, col));
                         break;
-                    case vertexPrimaryProperty:
-                        vertexPKName.add(parseColumnType(cch, col));
+                    case srcPrimaryProperty:
+                        srcPKprops.add(parseColumnType(cch, col));
+                        break;
+                    case dstPrimaryProperty:
+                        dstPKprops.add(parseColumnType(cch, col));
                         break;
                     default:
                         throw new Exception("Not support Property Type " + pType);
                 }
             }
         }
+        if(!srcPKprops.isEmpty() || !dstPKprops.isEmpty()){
+            String srcId = buildVertexId(getSourceLabel(), srcPKprops), dstId = buildVertexId(getTargetLabel(), dstPKprops);
+//            log.info("buildSrcId:{}, buildDstId:{}", srcId, dstId);
+            edge.sourceId(srcId);
+            edge.targetId(dstId);
+        }
+//        log.info("Display srcPKprops:{}", srcPKprops);
+//        log.info("Display dstPKprops:{}", dstPKprops);
         if (edge.sourceId() == null || edge.targetId() == null) {
             throw new Exception("sourceId or targetId not set!");
-        }
-        if(!vertexPKName.isEmpty()){
-            String srcId = buildVertexId(getSourceLabel(), vertexPKName), dstId = buildVertexId(getTargetLabel(), vertexPKName);
-            edge.sourceLabel(srcId);
-            edge.targetLabel(dstId);
         }
         return edge;
     }

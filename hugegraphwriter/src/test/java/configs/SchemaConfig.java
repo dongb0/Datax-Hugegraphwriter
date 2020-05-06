@@ -176,27 +176,36 @@ public class SchemaConfig {
             "                        \"idStrategy\": \"PRIMARY_KEY\",                    \n" +
             "                        \"column\": [\n" +
             "                            {\n" +
-            "                                \"name\": \"src_id\",\n" +
+            "                                \"name\": \"srcVertex_id\",\n" +
             "                                \"value\": \"{0}\",\n" +
             "                                \"valueType\": \"int\",\n" +
-            "                                \"cardinality\": \"single\",\n" +
-            "                                \"propertyType\": \"srcId\",\n" +
-            "                                \"nullable\": false,\n" +
-            "                                \"indexing\": true\n" +
-            "                            },\n" +"" +
+            "                                \"propertyType\": \"srcPrimaryProperty\",\n" +
+            "                            },\n" +
             "                            {\n" +
-            "                               \"name\": \"name\",\n" +
+            "                               \"name\": \"srcVertex_name\",\n" +
             "                               \"value\": \"{1}\",\n" +
+            "                               \"valueType\": \"string\",\n" +
+            "                               \"propertyType\": \"srcPrimaryProperty\",\n" +
+            "                            }" +
+            "                            {\n" +
+            "                                \"name\": \"dstVertex_id\",\n" +
+            "                                \"value\": \"{2}\",\n" +
+            "                                \"valueType\": \"int\",\n" +
+            "                                \"propertyType\": \"dstPrimaryProperty\",\n" +
+            "                            },\n" +
+            "                            {\n" +
+            "                               \"name\": \"dstVertex_name\",\n" +
+            "                               \"value\": \"{3}\",\n" +
+            "                               \"valueType\": \"string\",\n" +
+            "                               \"propertyType\": \"dstPrimaryProperty\",\n" +
+            "                            }" +
+            "                            {\n" +
+            "                               \"name\": \"date\",\n" +
+            "                               \"value\": \"{4}\",\n" +
             "                               \"valueType\": \"string\",\n" +
             "                               \"propertyType\": \"edgeProperty\",\n" +
             "                               \"nullable\": true\n" +
             "                            }," +
-            "                            {\n" +
-            "                               \"name\": \"dst_id\",\n" +
-            "                               \"value\": \"{2}\",\n" +
-            "                               \"valueType\": \"int\",\n" +
-            "                               \"propertyType\": \"dstId\",\n" +
-            "                            }" +
             "                        ]\n" +
             "                    }";
 
