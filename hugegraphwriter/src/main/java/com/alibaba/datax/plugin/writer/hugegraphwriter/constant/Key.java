@@ -20,5 +20,8 @@ public final class Key {
     public static final String COLUMN_NULLABLE = "nullable";
     public static final String COLUMN_INDEXING = "indexing";
 
+    public static final String[] VERTEX_ID_CHAR = new String[]{":", "!"};
+    public static final String[] VERTEX_ID_CHAR_REPLACE = new String[]{"`:", "`!"};
+
 }
 

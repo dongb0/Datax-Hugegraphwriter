@@ -30,7 +30,7 @@ public class SchemaConfig {
             "                    }";
 
     public static String jsonConfig_2 = "{\n" +
-            "                        \"host\": \"1localhost\",\n" +
+            "                        \"host\": \"localhost\",\n" +
             "                        \"port\": 8080,\n" +
             "                        \"graph\": \"hugegraph\",\n" +
             "                        \"label\": \"InsertTestE_1\",\n" +

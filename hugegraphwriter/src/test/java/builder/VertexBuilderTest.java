@@ -17,7 +17,7 @@ public class VertexBuilderTest {
     Logger log = HugegraphLogger.get(VertexBuilderTest.class);
 
     @Test
-    public void vertexBuilderTest(){
+    public void vertexBuilderTest() throws Exception {
         System.out.println("\n\nVertexBuilder Test 1...");
         VertexBuilder vbuilder = new VertexBuilder(config);
         Record record = new DefaultRecord();

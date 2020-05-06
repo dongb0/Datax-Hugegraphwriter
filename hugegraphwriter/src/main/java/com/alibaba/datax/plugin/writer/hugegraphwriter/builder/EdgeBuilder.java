@@ -3,21 +3,34 @@ package com.alibaba.datax.plugin.writer.hugegraphwriter.builder;
 import com.alibaba.datax.common.element.Column;
 import com.alibaba.datax.common.element.Record;
 import com.alibaba.datax.common.util.Configuration;
+import com.alibaba.datax.plugin.writer.hugegraphwriter.client.ClientHolder;
+import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.Key;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.PropertyType;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.EdgeStruct;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.ElementStruct;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.struct.ElementStruct.ColumnsConfHolder;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.util.Pair;
+import com.baidu.hugegraph.driver.SchemaManager;
 import com.baidu.hugegraph.structure.graph.Edge;
+import com.baidu.hugegraph.structure.graph.Vertex;
+import com.baidu.hugegraph.structure.schema.VertexLabel;
+import com.baidu.hugegraph.util.LongEncoding;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
 
+    private VertexLabel sourceLabel = null;
+    private VertexLabel targetLabel = null;
+    private SchemaManager schemaManager = null;
+
     public EdgeBuilder(Configuration config) {
         this.struct = createStruct(config);
+        this.schemaManager = new SchemaManager(ClientHolder.getClient(config), config.getString(Key.GRAPH));
     }
 
     @Override
@@ -27,13 +40,12 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
         edge.sourceLabel(struct.getSrcLabel());
         edge.targetLabel(struct.getDstLabel());
 
-        List<Pair<String, Object>> vertexPKName = new ArrayList<>();
+        List<Object> vertexPKName = new ArrayList<>();
         List<Pair<String, ColumnsConfHolder>> properties = struct.getColumnsProperties();
         for (Pair<String, ColumnsConfHolder> pair : properties) {
             String propName = pair.getKey();
             ColumnsConfHolder cch = pair.getValue();
 
-            //TODO optimize parseColumnIndex
             int index = getMappingColumnIndex(cch);
             Column col = record.getColumn(index);
 
@@ -43,17 +55,19 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
             if (col != null && col.getByteSize() != 0) {
                 PropertyType pType = cch.propertyType;
                 switch (pType) {
+                    //---- Id Strategy: customize id (num)
                     case srcId:
                         edge.sourceId(parseColumnType(cch, col));
                         break;
                     case dstId:
                         edge.targetId(parseColumnType(cch, col));
                         break;
+                    //---- Id Strategy: customize id
                     case edgeProperty:
                         edge.property(propName, parseColumnType(cch, col));
                         break;
                     case vertexPrimaryProperty:
-                        vertexPKName.add(new Pair<>(propName, col));
+                        vertexPKName.add(parseColumnType(cch, col));
                         break;
                     default:
                         throw new Exception("Not support Property Type " + pType);
@@ -64,12 +78,54 @@ public class EdgeBuilder extends ElemBuilder<Edge, EdgeStruct> {
             throw new Exception("sourceId or targetId not set!");
         }
         if(!vertexPKName.isEmpty()){
-            buildVertexId(vertexPKName);
+            String srcId = buildVertexId(getSourceLabel(), vertexPKName), dstId = buildVertexId(getTargetLabel(), vertexPKName);
+            edge.sourceLabel(srcId);
+            edge.targetLabel(dstId);
         }
         return edge;
     }
 
-    void buildVertexId(List<Pair<String, Object>> kv){
+    public String buildVertexId(VertexLabel vertexLabel,List<Object> kv){
+        StringBuilder vertexId = new StringBuilder();
+        vertexId.append(vertexLabel.id()).append(":");
+        for(Object value : kv){
+            String pkValue;
+            if(value instanceof Number || value instanceof Date){
+                pkValue = LongEncoding.encodeNumber(value);
+            }else{
+                pkValue = String.valueOf(value);
+            }
 
+            //replace ':' or '!' in original property value
+            pkValue = StringUtils.replaceEach(pkValue, Key.VERTEX_ID_CHAR, Key.VERTEX_ID_CHAR_REPLACE);
+            vertexId.append(pkValue).append("!");
+        }
+        vertexId.deleteCharAt(vertexId.length() - 1);
+        return vertexId.toString();
+    }
+
+    public VertexLabel getSourceLabel()
+    {
+        if(sourceLabel == null){
+            String srcLabel = struct.getSrcLabel();
+            this.sourceLabel = schemaManager.getVertexLabel(srcLabel);
+        }
+        return sourceLabel;
+    }
+
+    public void setSourceLabel(VertexLabel sourceLabel) {
+        this.sourceLabel = sourceLabel;
+    }
+
+    public VertexLabel getTargetLabel() {
+        if(targetLabel == null){
+            String dstLabel = struct.getDstLabel();
+            this.targetLabel = schemaManager.getVertexLabel(dstLabel);
+        }
+        return targetLabel;
+    }
+
+    public void setTargetLabel(VertexLabel targetLabel) {
+        this.targetLabel = targetLabel;
     }
 }

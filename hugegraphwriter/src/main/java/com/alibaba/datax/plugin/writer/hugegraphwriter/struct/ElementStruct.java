@@ -1,6 +1,7 @@
 package com.alibaba.datax.plugin.writer.hugegraphwriter.struct;
 
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.CardinalityType;
+import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.IdStrategy;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.PropertyType;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.constant.ValueType;
 import com.alibaba.datax.plugin.writer.hugegraphwriter.util.Pair;
@@ -12,6 +13,8 @@ import java.util.Map;
 
 public class ElementStruct {
     protected String label = null;
+    //TODO
+//    protected IdStrategy idStrategy;
 
     public List<Pair<String, ColumnsConfHolder>> getColumnsProperties() {
         return columnsProperties;

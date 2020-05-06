@@ -39,11 +39,12 @@ public class TaskExecutor {
 
     public void submitBatch(List<Record> records, ElemType type){
         List<GraphElement> elemRecords = new ArrayList<>(records.size());
-        for(Record record : records)
-            elemRecords.add(this.builder.build(record));
 
         batchInsertTask = new BatchInsertTask(elemRecords, type);
         try {
+            for(Record record : records){
+                elemRecords.add(this.builder.build(record));
+            }
             CompletableFuture.runAsync(batchInsertTask, batchService).get();
         } catch (Exception e){
             e.printStackTrace();

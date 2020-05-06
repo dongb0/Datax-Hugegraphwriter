@@ -77,7 +77,7 @@ public class GraphManagerTest {
     }
 
     @Test
-    public void insertVertexTest2(){
+    public void insertVertexTest2() throws Exception {
         vertex_sb.createPropertySchemas();
         vertex_sb.createVertexSchema();
 
@@ -102,7 +102,7 @@ public class GraphManagerTest {
     }
 
     @Test
-    public void insertEdgeTest2(){
+    public void insertEdgeTest2() throws Exception {
         System.out.println("\n\nInsert V/E Test 2");
 
         insertVertexTest2();
