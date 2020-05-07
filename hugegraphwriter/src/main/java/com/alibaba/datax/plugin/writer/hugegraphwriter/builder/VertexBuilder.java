@@ -40,6 +40,7 @@ public class VertexBuilder extends ElemBuilder<Vertex, VertexStruct> {
                 PropertyType pType = cch.propertyType;
                 switch (pType) {
                     case vertexProperty:
+                    case vertexPrimaryProperty:
                         vertex.property(propName, parseColumnType(cch, col));
                         break;
                     case vertexId:

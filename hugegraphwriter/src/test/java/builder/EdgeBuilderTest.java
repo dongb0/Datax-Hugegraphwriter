@@ -43,7 +43,7 @@ public class EdgeBuilderTest {
     }
 
 
-    @Test
+//    @Test
     public void edgeBuilderBuildVertexIdTest(){
         System.out.println("\n\nEdgeBuilder Build Vertex Id with Primary Key Id strategy ...");
 
@@ -65,12 +65,13 @@ public class EdgeBuilderTest {
 
     @Test
     public void edgeBuilder_BuildPrimaryKeysEdgeTest() throws Exception {
+        edgeBuilderBuildVertexIdTest();
+
         Configuration config = Configuration.from(SchemaConfig.jsonConfig_Schema_PrimaryKeysE);
         SchemaBuilder schemaBuilder = new SchemaBuilder(config);
         schemaBuilder.createSchemas();
 
         GraphManager gm = new GraphManager(ClientHolder.getClient(config), config.getString(Key.GRAPH));
-//        Edge e1 = new Edge("schema_testE");
         Record r = new DefaultRecord();
         r.addColumn(new LongColumn(1001));
         r.addColumn(new StringColumn("test1"));
